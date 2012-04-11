@@ -1,0 +1,11 @@
+development:
+  username: 'your_sendgrid_username'
+  api_key: 'your_sendgrid_api_key'
+  from_address: 'sendgrid_demo@example.com'
+  redis_uri: 'redis://localhost:6379'
+
+production:
+  username: <%= ENV['SENDGRID_USER'] %>
+  api_key: <%= ENV['SENDGRID_KEY'] %>
+  from_address: <%= ENV['FROM_ADDRESS'] %>
+  redis_uri: <%= ENV['REDIS_URI'] %>

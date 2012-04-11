@@ -8,4 +8,5 @@ use Rack::ShowExceptions
 
 Resque.redis = ENV['REDIS_URI'] if ENV['REDIS_URI']
 
-run Rack::URLMap.new "/" => SendGridDemo::App.new, "/resque" => Resque::Server.new
+run Rack::URLMap.new "/"       => SendGridDemo::App.new,
+                     "/resque" => Resque::Server.new

@@ -10,14 +10,83 @@
   </head>
   <body>
     <div class="container">
+      <!-- START Page Title !-->
       <div class="row">
         <div class="span12">
           <h1>SendGrid Email Scheduler</h1>
-          <form method="POST">
-            <input type="submit" value="Create New Job"/>
+        </div>
+      </div>
+      <div class="row">
+        <p class="span12">This demo shows how you can use the Unicorn web server with Heroku to deploy a Ruby app with email scheduling ability.</p>
+      </div>
+      <hr />
+      <!-- END Page Title !-->
+      <div class="row" id="alerts"></div>
+      <div class="row">
+        <div class="span12">
+          <form method="POST" class="form-horizontal" id="mail-form">
+
+            <div class="control-group">
+              <label class="control-label" for="to">To</label>
+              <div class="controls">
+                <input type="text" class="input-xlarge span10" id="to" name="to">
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="subject">Subject</label>
+              <div class="controls">
+                <input type="text" class="input-xlarge span10" id="subject" name="subject">
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="body">Message</label>
+              <div class="controls">
+                <textarea class="input-xlarge span10" id="body" name="body" rows="10"></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="submit" class="btn btn-primary pull-right">Send</button>
+            </div>
           </form>
         </div>
       </div>
     </div>
-  </body>
-</html>
+
+    <script>
+      $(document).ready(function() {
+
+          var displayAlert = function(message, type) {
+            var alertsContainer = $('#alerts');
+            alertsContainer.append('<div class="alert alert-' + type + '"><a class="close" data-dismiss="alert">×</a>' + message + '</div>');
+          };
+
+          var reset = function() {
+            $('#to').val('');
+            $('#subject').val('');
+            $('#body').val('');
+            return true;
+          };
+
+          $('#submit').click(function(event) {
+            event.preventDefault();
+
+            $.ajax({
+              type:'POST',
+              url: '/schedule',
+              data:$('#mail-form').serialize(),
+              success: function(response) {
+                displayAlert(response.message, 'success');
+                reset();
+              },
+              error: function(response) {
+                displayAlert('Uhoh! It looks like something went wrong!', 'error');
+              }
+            });
+          });
+        });
+      </script>
+    </body>
+  </html>
