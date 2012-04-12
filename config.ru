@@ -6,7 +6,9 @@ require 'resque/server'
 
 use Rack::ShowExceptions
 
-Resque.redis = ENV['REDIS_URI'] if ENV['REDIS_URI']
+$APP_ENV = ENV['APP_ENV'] ||= 'development'
+$CONFIG = YAML.load(ERB.new(File.read('config/sendgrid.yml')).result)[$APP_ENV]
 
+Resque.redis = $CONFIG['redis_uri']
 run Rack::URLMap.new "/"       => SendGridDemo::App.new,
                      "/resque" => Resque::Server.new

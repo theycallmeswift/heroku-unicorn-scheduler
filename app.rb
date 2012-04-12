@@ -1,5 +1,7 @@
 require 'sinatra'
 require 'resque'
+require 'resque_scheduler'
+require 'resque/scheduler'
 require 'scheduled_email'
 
 set :public_folder, File.dirname(__FILE__) + '/public'
@@ -15,7 +17,8 @@ module SendGridDemo
       full_params = params.values.select { |value| !value.empty? }
 
       if full_params.length == params.keys.length
-        Resque.enqueue(ScheduledEmail, params)
+        time = (params['length'].to_i * params['unit'].to_i)
+        Resque.enqueue_in(time, ScheduledEmail, params)
         puts "SENDING MESSAGE: #{params}"
         { :message => "Your email has been queued for delivery!" }.to_json
       else
